@@ -9,13 +9,13 @@ if not os.path.exists('.env'):
 else:
     with open('.env', 'r', encoding='utf-8') as f:
         lines = f.readlines()
-        url_line = [line for line in lines if lines.startswith('SERVER_URL')]
+        url_line = [line for line in lines if line.startswith('SERVER_URL')]
 
         if len(url_line) == 0:
             print('Error: Missing SERVER_URL parameter in .env')
             sys.exit(1)
-        
-        URL = url_line[0].split('=')[1]
+
+        URL = url_line[0].split('=')[1][:-1]
 
 
 def main():
@@ -30,11 +30,11 @@ def main():
         grade = cutie.get_number('Enter the grade (0-100): ')
         feedback = input('Enter feedback: ')
 
-        response = requests.post(URL + '/assignments/submit', json={ 
+        response = requests.post(URL + '/assignments/submit', json={
             'assignment': assignment,
             'group': group,
             'grade': grade,
-            'feedback': feedback 
+            'feedback': feedback
         }, timeout=3000)
 
         response = response.json()
