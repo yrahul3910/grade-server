@@ -1,8 +1,21 @@
+import os
+import sys
 import requests
 import cutie
 
 
-URL = 'http://localhost:5000'
+if not os.path.exists('.env'):
+    URL = 'http://localhost:5000'
+else:
+    with open('.env', 'r', encoding='utf-8') as f:
+        lines = f.readlines()
+        url_line = [line for line in lines if lines.startswith('SERVER_URL')]
+
+        if len(url_line) == 0:
+            print('Error: Missing SERVER_URL parameter in .env')
+            sys.exit(1)
+        
+        URL = url_line[0].split('=')[1]
 
 
 def main():
