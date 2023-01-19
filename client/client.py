@@ -5,7 +5,7 @@ import cutie
 URL = 'http://localhost:5000'
 
 
-def get_assignments():
+def main():
     response = requests.get(URL + '/assignments/get')
     response = response.json()['assignments']
 
@@ -22,7 +22,15 @@ def get_assignments():
             'group': group,
             'grade': grade,
             'feedback': feedback 
-        })
+        }, timeout=3000)
+
+        response = response.json()
+        if response['status'] != 'success':
+            print('Error:', response['error'])
 
         if not cutie.prompt_yes_or_no('Submit another grade?'):
             break
+
+
+if __name__ == '__main__':
+    main()

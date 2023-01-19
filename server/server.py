@@ -5,14 +5,14 @@ import pandas as pd
 app = Flask(__name__)
 
 GRADES_FILE = 'CSC 591 (021) SPRG 2023 Grades.xlsx'
-GROUPS_FILE = 'project/homework groups CSC591/791.xlsx'
+GROUPS_FILE = 'project_homework groups CSC591_791.xlsx'
 
 
 @app.route('/assignments/get')
 def get_assignments():
     # Read each time so that the server doesn't need to be restarted
     grades_df = pd.read_excel(GRADES_FILE, sheet_name='Grades')
-    assignments = grades_df.columns[8:-1:2]
+    assignments = grades_df.columns[8:-1:2].tolist()
     return { 'assignments': assignments }
 
 
@@ -29,7 +29,7 @@ def submit_grade():
     grades_df = pd.read_excel(GRADES_FILE, sheet_name='Grades')
 
     for member in ['Member 1', 'Member 2', 'Member 3', 'Member 4']:
-        if re.match('^\\s*$', names[member].values[0]):
+        if pd.isna(names[member].values[0]) or re.match('^\\s*$', names[member].values[0]):
             continue
 
         # Get the first and last name
@@ -39,7 +39,10 @@ def submit_grade():
         # Iterate over rows in grades_df
         for index, row in grades_df.iterrows():
             # If the first and last name match, then update the grade
-            if first in row['First Name'] and last in row['Last Name']:
+            if first in row['First name'] and last in row['Last name']:
                 assignment_name = assignment.split(' (Real)')[0]
                 grades_df.at[index, req['assignment']] = grade
                 grades_df.at[index, assignment_name + ' (Feedback)'] = feedback
+    
+    grades_df.to_excel('out.xlsx', sheet_name='Grades')
+    return { 'status': 'success' }
