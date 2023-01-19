@@ -12,7 +12,7 @@ GROUPS_FILE = 'project_homework groups CSC591_791.xlsx'
 def get_assignments():
     # Read each time so that the server doesn't need to be restarted
     grades_df = pd.read_excel(GRADES_FILE, sheet_name='Grades')
-    assignments = grades_df.columns[8:-1:2].tolist()
+    assignments = grades_df.columns[7:-1:2].tolist()
     return { 'assignments': assignments }
 
 
