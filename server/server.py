@@ -10,6 +10,9 @@ GROUPS_FILE = 'project_homework groups CSC591_791.xlsx'
 
 @app.route('/assignments/get')
 def get_assignments():
+    """
+    Returns a list of assignments from the Moodle spreadsheet.
+    """
     # Read each time so that the server doesn't need to be restarted
     grades_df = pd.read_excel(GRADES_FILE, sheet_name='Grades')
     assignments = grades_df.columns[7:-1:2].tolist()
@@ -18,6 +21,20 @@ def get_assignments():
 
 @app.route('/assignments/submit', methods=['POST'])
 def submit_grade():
+    """
+    Endpoint to submit a grade for a group, for an assignment. Accepts an input of the form:
+    {
+        "assignment": string,
+        "group": number,
+        "grade": number,
+        "feedback": string
+    }
+    Returns 
+    {
+        "status": "success"
+    }
+    if successful.
+    """
     req = request.get_json(force=True)
     assignment, group, grade, feedback = req['assignment'], req['group'], req['grade'], req['feedback']
 
